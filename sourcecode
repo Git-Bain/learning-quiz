@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+
+class StoryQuiz
+{
+    static void Main()
+    {
+        // Story
+        string story = "Once upon a time, in a small village nestled in the mountains, there lived a young boy named Liam. "
+                     + "Liam loved exploring the nearby forest, where he would often discover mysterious plants and animals. "
+                     + "One day, he stumbled upon a hidden cave deep within the woods. "
+                     + "Inside the cave, he found a glowing crystal that shimmered with a magical light. "
+                     + "Curious, Liam picked up the crystal and suddenly felt a surge of energy. "
+                     + "As he walked out of the cave, he noticed that the animals in the forest were behaving strangely, as if they could understand him. "
+                     + "He realized that the crystal had given him the ability to communicate with animals. "
+                     + "Excited, he spent the next few days talking to the creatures of the forest, learning their stories and secrets. "
+                     + "But one day, the crystal began to lose its glow, and the animals warned Liam that he must return it to the cave before sunset. "
+                     + "With time running out, Liam raced back to the cave, hoping to return the crystal before its magic was gone forever.";
+
+        // Display the story
+        Console.WriteLine("Story:");
+        Console.WriteLine(story);
+        Console.WriteLine();
+
+        // Initial quiz
+        List<(string, string[], int, string)> questions = new List<(string, string[], int, string)>
+        {
+            ("Where did Liam live?", new string[] {"In a forest", "In a village", "On a farm"}, 1, "Liam lived in a small village nestled in the mountains."),
+            ("What did Liam find in the cave?", new string[] {"A glowing crystal", "A treasure chest", "A map"}, 0, "Liam found a glowing crystal that shimmered with a magical light."),
+            ("What power did the crystal give Liam?", new string[] {"Super strength", "Flight", "Communicating with animals"}, 2, "The crystal gave Liam the ability to communicate with animals."),
+            ("How were the animals behaving after Liam found the crystal?", new string[] {"Aggressively", "Strangely", "Fearfully"}, 1, "The animals were behaving strangely, as if they could understand him."),
+            ("What did the animals warn Liam about?", new string[] {"To hide the crystal", "To return the crystal", "To destroy the crystal"}, 1, "The animals warned Liam that he must return the crystal to the cave before sunset."),
+            ("Why did Liam rush back to the cave?", new string[] {"To return the crystal", "To explore more", "To hide from danger"}, 0, "Liam raced back to the cave to return the crystal before its magic was gone forever."),
+            ("What would happen if the crystal lost its glow?", new string[] {"The animals would disappear", "The magic would be gone", "The forest would wither"}, 1, "The crystal's magic would be gone if it lost its glow.")
+        };
+
+        // Track user mistakes
+        List<int> mistakes = new List<int>();
+
+        // First quiz
+        Console.WriteLine("Quiz:");
+        for (int i = 0; i < questions.Count; i++)
+        {
+            AskQuestion(questions[i], i, mistakes);
+        }
+
+        // If there were mistakes, generate a new quiz based on the user's mistakes
+        if (mistakes.Count > 0)
+        {
+            Console.WriteLine("\nYou made some mistakes. Let's try again with those questions:\n");
+            foreach (int mistakeIndex in mistakes)
+            {
+                AskQuestion(questions[mistakeIndex], mistakeIndex, null);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Great job! You answered all the questions correctly.");
+        }
+    }
+
+    static void AskQuestion((string, string[], int, string) question, int questionIndex, List<int> mistakes)
+    {
+        Console.WriteLine(question.Item1);
+        for (int i = 0; i < question.Item2.Length; i++)
+        {
+            Console.WriteLine($"{i + 1}. {question.Item2[i]}");
+        }
+
+        int userAnswer;
+        bool validInput = false;
+
+        // Input validation
+        do
+        {
+            Console.Write("Your answer (1-3): ");
+            validInput = int.TryParse(Console.ReadLine(), out userAnswer) && userAnswer >= 1 && userAnswer <= 3;
+            if (!validInput)
+                Console.WriteLine("Please enter a valid option (1, 2, or 3).");
+        }
+        while (!validInput);
+
+        if (userAnswer - 1 == question.Item3)
+        {
+            Console.WriteLine("Correct!\n");
+        }
+        else
+        {
+            Console.WriteLine($"Wrong. {question.Item4}\n");
+            mistakes?.Add(questionIndex);
+        }
+    }
+}
